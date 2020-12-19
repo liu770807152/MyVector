@@ -23,7 +23,8 @@ public:
 	explicit MyVector() { 
 		address = nullptr; num = capacity = 0; 
 	}
-	MyVector(MyVector& other) :address(address), capacity(capacity), num(num) {
+	MyVector(MyVector& other) :capacity(other.capacity), num(other.num) {
+		address = new T[capacity];
 		for (int i = 0; i < other.num; i++) {
 			*(address + i) = *(other.address + i);
 		}
@@ -235,15 +236,14 @@ public:
 	//删除两个下标之间的所有元素
 	void erase(const int pos1, const int pos2);
 	//修改迭代器所在位置的元素
-	void modify(Iterator& it, T&& data);
+	void modify(Iterator& it, T data);
 	//修改下标所在位置的元素
-	void modify(const int pos, T&& data);
+	void modify(const int pos, T data);
 	//修改两个下标之间的所有元素
 	void modify(const int pos1, const int pos2, const T* data_beg, const T* data_end);
 	//修改两个下标之间的所有元素
 	void modify(const int pos1, const int pos2, const MyVector& other);
-	//根据sign进行升序/降序排序,默认false降序，true升序(quicksort)
-	void sort(bool sign);
+	void sort();
 };
 
 template<class T>
@@ -253,8 +253,7 @@ ostream& operator << (ostream& os, const MyVector<T>* dt) {
 
 template<class T>
 void MyVector<T>::push_back(const T& data) {
-	if (num == capacity)
-	{
+	if (num == capacity) {
 		capacity += ((capacity >> 1) > 1) ? (capacity >> 1) : 1;
 		T* temp = new T[num];
 		//临时保存数据
@@ -339,7 +338,7 @@ T MyVector<T>::maximum()const {
 	}
 	else {
 		cout << "亲容器里没有元素哪来的最大值哇" << endl;
-		return;
+		return -1;
 	}
 }
 
@@ -359,7 +358,7 @@ T MyVector<T>::maximum(T*& pos)const {
 	}
 	else {
 		cout << "亲容器里没有元素哪来的最大值哇" << endl;
-		return;
+		return -1;
 	}
 }
 
@@ -375,7 +374,7 @@ T MyVector<T>::maximum(int pos1, int pos2)const {
 	}
 	else {
 		cout << "亲下标是不是传错了" << endl;
-		return;
+		return -1;
 	}
 }
 
@@ -394,7 +393,7 @@ T MyVector<T>::maximum(int pos1, int pos2, T*& pos)const {
 	}
 	else {
 		cout << "亲下标是不是传错了" << endl;
-		return;
+		return -1;
 	}
 }
 
@@ -411,7 +410,7 @@ T MyVector<T>::minimum()const {
 	}
 	else {
 		cout << "亲容器里没有元素哪来的最小值哇" << endl;
-		return;
+		return -1;
 	}
 }
 
@@ -431,7 +430,7 @@ T MyVector<T>::minimum(T*& pos)const {
 	}
 	else {
 		cout << "亲容器里没有元素哪来的最小值哇" << endl;
-		return;
+		return -1;
 	}
 }
 
@@ -815,7 +814,7 @@ void MyVector<T>::erase(const int pos1, const int pos2) {
 }
 
 template<class T>
-void MyVector<T>::modify(const int pos, T&& data) {
+void MyVector<T>::modify(const int pos, T data) {
 	try	{
 		if (pos >= 0 && pos < num) {
 			address[pos] = data;
@@ -831,7 +830,7 @@ void MyVector<T>::modify(const int pos, T&& data) {
 }
 
 template<class T>
-void MyVector<T>::modify(Iterator& it, T&& data) {
+void MyVector<T>::modify(Iterator& it, T data) {
 	try	{
 		int pos = it - address;
 		if (pos >= 0 && pos < num) {
@@ -938,38 +937,17 @@ void MyVector<T>::modify(const int pos1, const int pos2, const MyVector& other) 
 }
 
 template<class T>
-// shellsort
-void MyVector<T>::sort(bool sign = false) {
+// insertion sort
+void MyVector<T>::sort() {
 	try {
-		if (num) {
-			T temp = 0;
-			//升序
-			if (sign == true) {
-				for (int gap = num / 2; gap > 0; gap /= 2) {
-					for (int i = gap; i < num; ++i) {
-						for (int j = i - gap; j >= 0 && address[j] > address[j + gap]; j -= gap) {
-							temp = address[j];
-							address[j] = address[j + gap];
-							address[j + gap] = temp;
-						}
-					}
-				}
+		for (int i = 1; i < this->num; i++) {
+			T key = this->at(i);
+			int j = i - 1;
+			while ((j >= 0) && (key < this->at(j))) {
+				this->modify(j+1, this->at(j));
+				j--;
 			}
-			//降序
-			else {
-				for (int gap = num / 2; gap > 0; gap /= 2) {
-					for (int i = gap; i < num; ++i) {
-						for (int j = i - gap; j >= 0 && address[j] < address[j + gap]; j -= gap) {
-							temp = address[j];
-							address[j] = address[j + gap];
-							address[j + gap] = temp;
-						}
-					}
-				}
-			}
-		}
-		else {
-			throw - 1;
+			this->modify(j + 1, key);
 		}
 	}
 	catch (int)	{
