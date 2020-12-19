@@ -7,8 +7,7 @@
 
 using namespace std;
 template<class T>
-class My_Vector
-{
+class My_Vector {
 private:
 	T* address;//首地址
 	size_t capacity;//容量大小
@@ -22,120 +21,144 @@ private:
 
 public:
 	explicit My_Vector() { address = nullptr; num = capacity = 0; }
-	My_Vector(My_Vector& other) :address(address), capacity(capacity), num(num)
-	{
+	My_Vector(My_Vector& other) :address(address), capacity(capacity), num(num) {
 		for (int i = 0; i < other.num; i++)
 			*(address + i) = *(other.address + i);
 	}
-	~My_Vector()
-	{
+	~My_Vector() {
 		_clear();
 	}
-	struct Iterator//迭代器
-	{
-		T* pt;//指针
-		Iterator()//无参构造
-		{
+	struct Iterator {
+		//指针
+		T* pt;
+
+		//无参构造
+		Iterator() {
 			pt = nullptr;
 		}
-		Iterator(Iterator& other)//拷贝构造
-		{
+
+		//拷贝构造
+		Iterator(Iterator& other) {
 			this->pt = other.pt;
 		}
-		~Iterator()//析构
-		{
+		
+		//析构
+		~Iterator() {
 			pt = nullptr;
 		}
-		void operator = (const T* obj)//赋值运算符重载
-		{
+
+		//赋值运算符重载
+		void operator = (const T* obj) {
 			pt = (T*)obj;
 		}
-		T& operator * ()const//解引用运算符重载
-		{
+
+		//解引用运算符重载
+		T& operator * () const {
 			return (*pt);
 		}
-		Iterator operator + (const int off)//+运算符重载
-		{
+
+		//+运算符重载
+		Iterator operator + (const int off) {
 			return this->pt + off;
 		}
-		int operator - (Iterator& other)//-运算符重载
-		{
+
+		//-运算符重载
+		int operator - (Iterator& other) {
 			return (this->pt - other.pt);
 		}
-		int operator - (T* other)//-运算符重载
-		{
+
+		//-运算符重载
+		int operator - (T* other) {
 			return static_cast<int>(this->pt - other);
 		}
-		Iterator operator - (const int off)//-运算符重载
-		{
+
+		//-运算符重载
+		Iterator operator - (const int off) {
 			return this->pt - off;
 		}
-		Iterator& operator ++ (int)//后++运算符重载
-		{
-			Iterator* temp = new Iterator;//临时变量
+
+		//后++运算符重载
+		Iterator& operator ++ (int) {
+			//临时变量
+			Iterator* temp = new Iterator;
 			temp->pt = this->pt;
 			this->pt++;
 			return *temp;
 		}
-		Iterator& operator ++ ()//前++运算符重载
-		{
+
+		//前++运算符重载
+		Iterator& operator ++ () {
 			return ++this->pt;
 		}
-		Iterator& operator -- (int)//后--运算符重载
-		{
-			Iterator* temp = new Iterator;//临时变量
+
+		//后--运算符重载
+		Iterator& operator -- (int) {
+			//临时变量
+			Iterator* temp = new Iterator;
 			temp->pt = this->pt;
 			this->pt--;
 			return *temp;
 		}
-		Iterator& operator -- ()//前--运算符重载
-		{
+
+		//前--运算符重载
+		Iterator& operator -- () {
 			return 	--this->pt;
 		}
-		bool operator != (const Iterator& obj)//!=运算符重载
-		{
+
+		//!=运算符重载
+		bool operator != (const Iterator& obj) {
 			return (this->pt != obj);
 		}
-		bool operator != (const T* obj)//!=运算符重载
-		{
+
+		//!=运算符重载
+		bool operator != (const T* obj) {
 			return (this->pt != obj);
 		}
-		Iterator& operator += (const int off)//+=运算符重载
-		{
+
+		//+=运算符重载
+		Iterator& operator += (const int off) {
 			return pt + off;
 		}
-		int operator -= (const int off)//-=运算符重载
-		{
+
+		//-=运算符重载
+		int operator -= (const int off) {
 			return static_cast<int>(pt - off);
 		}
-		Iterator& operator -= (const Iterator& other)//-=运算符重载
-		{
+
+		//-=运算符重载
+		Iterator& operator -= (const Iterator& other) {
 			this->pt = this->pt - other->pt;
 			return this->pt;
 		}
 
 	};
+
 	/*---------------------------------------以下为<<重载-------------------------------------------*/
 	friend ostream& operator << (ostream& os, const My_Vector<T>* dt);
+
 	/*--------------------------------------以下为成员函数------------------------------------------*/
-	T* begin()const//求容器始端地址
-	{
+	//求容器始端地址
+	T* begin()const {
 		return this->address;
 	}
-	T* end()const//求容器末端地址
-	{
+
+	//求容器末端地址
+	T* end()const {
 		return this->address + num;
 	}
-	size_t get_capacity()const//求容量大小
-	{
+
+	//求容量大小
+	size_t get_capacity()const {
 		return this->capacity;
 	}
-	size_t size()const//求元素数量
-	{
+
+	//求元素数量
+	size_t size()const {
 		return this->num;
 	}
-	T at(const size_t pos)const//正迭代器：返回所在位置的元素
-	{
+
+	//正迭代器：返回所在位置的元素
+	T at(const size_t pos)const	{
 		try {
 			if (pos < num && pos >= 0)
 				return address[pos];
@@ -148,8 +171,9 @@ public:
 			return 0;
 		}
 	}
-	T at_back(const int pos)const//逆迭代器：返回倒数第几个元素
-	{
+
+	//逆迭代器：返回倒数第几个元素
+	T at_back(const int pos)const {
 		try {
 			if ((-1 * pos) <= num && pos < 0)
 				return address[num + pos];
@@ -162,6 +186,7 @@ public:
 			return;
 		}
 	}
+
 	//在末尾添加元素
 	void push_back(const T& data);
 	//在开头添加元素
@@ -219,301 +244,293 @@ public:
 };
 
 template<class T>
-ostream& operator << (ostream& os, const My_Vector<T>* dt)
-{
+ostream& operator << (ostream& os, const My_Vector<T>* dt) {
 	return os << *dt;
 }
 
 template<class T>
-void My_Vector<T>::push_back(const T& data)
-{
+void My_Vector<T>::push_back(const T& data) {
 	if (num == capacity)
 	{
-		capacity += ((capacity >> 1) > 1) ? (capacity >> 1) : 1;//每次开1.5倍内存
-		T* temp = new T[num];
-		memcpy(temp, address, num * sizeof(T));//临时保存数据
-		address = new T[capacity];//重新分配内存
-		memcpy(address, temp, num * sizeof(T));//把临时数据拷贝回来
+		capacity += ((capacity >> 1) > 1) ? (capacity >> 1) : 1;
+		//临时保存数据
+		memcpy(temp, address, num * sizeof(T));
+		//重新分配内存
+		this.address = new T[capacity];
+		//把临时数据拷贝回来
+		memcpy(address, temp, num * sizeof(T));
 		delete[] temp;
 	}
 	address[num++] = data;//添加元素
 }
 
 template<class T>
-void My_Vector<T>::push_front(const T& data)
-{
-	if (num == capacity)
-		capacity += ((capacity >> 1) > 1) ? (capacity >> 1) : 1;//每次开1.5倍内存
+void My_Vector<T>::push_front(const T& data) {
+	if (num == capacity) {
+		//每次开1.5倍内存
+		capacity += ((capacity >> 1) > 1) ? (capacity >> 1) : 1;
+	}
 	T* temp = new T[num];
-	memcpy(temp, address, num * sizeof(T));//临时保存数据
-	address = new T[capacity];//重新分配内存
-	memcpy(address + 1, temp, num * sizeof(T));//把临时数据拷贝回来
+	//临时保存数据
+	memcpy(temp, address, num * sizeof(T));
+	//重新分配内存
+	this.address = new T[capacity];
+	//把临时数据拷贝回来
+	memcpy(address + 1, temp, num * sizeof(T));
 	delete[] temp;
-	address[0] = data;//添加元素
+	//添加元素
+	address[0] = data;
 	num++;
 }
 
 template<class T>
-void My_Vector<T>::pop_back()
-{
-	if (--num != 0)
-	{
+void My_Vector<T>::pop_back() {
+	if (--num != 0) {
 		T* temp = new T[num];
-		for (int i = 0; i < num; i++)
-		{
-			temp[i] = address[i];//临时保存数据
+		for (int i = 0; i < num; i++) {
+			//临时保存数据
+			temp[i] = address[i];
 		}
 		address = new T[num];
-		for (int i = 0; i < num; i++)
-		{
-			address[i] = temp[i];//把临时数据拷贝回来
+		for (int i = 0; i < num; i++) {
+			//把临时数据拷贝回来
+			address[i] = temp[i];
 		}
 		delete[] temp;
 	}
-	else
+	else {
 		_clear();
+	}
 }
 
 template<class T>
-void My_Vector<T>::pop_front()
-{
-	if (--num != 0)
-	{
+void My_Vector<T>::pop_front() {
+	if (--num != 0) {
 		T* temp = new T[num];
-		for (int i = 1; i <= num; i++)
-		{
-			temp[i - 1] = address[i];//临时保存数据
+		for (int i = 1; i <= num; i++) {
+			temp[i - 1] = address[i];
 		}
 		address = new T[num];
-		for (int i = 0; i < num; i++)
-		{
-			address[i] = temp[i];//把临时数据拷贝回来
+		for (int i = 0; i < num; i++) {
+			address[i] = temp[i];
 		}
 		delete[] temp;
 	}
-	else
+	else {
 		_clear();
+	}
 }
 
 template<class T>
-T My_Vector<T>::maximum()const//太简单了没有注释
-{
+T My_Vector<T>::maximum()const {
 	T* at = this->begin();
-	if (at)
-	{
+	if (at) {
 		T temp = *at;
-		for (; at != this->end(); at++)
-			if (temp < *at)
+		for (; at != this->end(); at++) {
+			if (temp < *at) {
 				temp = *at;
+			}
+		}
 		return temp;
 	}
-	else
-	{
+	else {
 		cout << "亲容器里没有元素哪来的最大值哇" << endl;
 		return;
 	}
-
 }
 
 template<class T>
-T My_Vector<T>::maximum(T*& pos)const//太简单了没有注释
-{
+T My_Vector<T>::maximum(T*& pos)const {
 	T* at = this->begin();
 	pos = this->address;
-	if (at)
-	{
+	if (at)	{
 		T temp = *at;
-		for (; at != this->end(); at++)
-			if (temp < *at)
-			{
+		for (; at != this->end(); at++) {
+			if (temp < *at) {
 				temp = *at;
 				pos = at;
 			}
+		}
 		return temp;
 	}
-	else
-	{
+	else {
 		cout << "亲容器里没有元素哪来的最大值哇" << endl;
 		return;
 	}
 }
 
 template<class T>
-T My_Vector<T>::maximum(int pos1, int pos2)const//太简单了没有注释
-{
+T My_Vector<T>::maximum(int pos1, int pos2)const {
 	T temp = this->at(pos1);
-	if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0)
-	{
+	if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
 		for (int i = pos1; i != pos2; i++)
-			if (temp < this->at(i))
-			{
+			if (temp < this->at(i)) {
 				temp = this->at(i);
 			}
 		return temp;
 	}
-	else
-	{
+	else {
 		cout << "亲下标是不是传错了" << endl;
 		return;
 	}
 }
 
 template<class T>
-T My_Vector<T>::maximum(int pos1, int pos2, T*& pos)const//太简单了没有注释
-{
+T My_Vector<T>::maximum(int pos1, int pos2, T*& pos)const {
 	T temp = this->at(pos1);
 	pos = this->address + pos1;
-	if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0)
-	{
-		for (int i = pos1; i != pos2; i++)
-			if (temp < this->at(i))
-			{
+	if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
+		for (int i = pos1; i != pos2; i++) {
+			if (temp < this->at(i)) {
 				temp = this->at(i);
 				pos = this->address + i;
 			}
+		}
 		return temp;
 	}
-	else
-	{
+	else {
 		cout << "亲下标是不是传错了" << endl;
 		return;
 	}
 }
 
 template<class T>
-T My_Vector<T>::minimum()const//太简单了没有注释
-{
+T My_Vector<T>::minimum()const {
 	T* at = this->begin();
-	if (at)
-	{
+	if (at)	{
 		T temp = *at;
-		for (; at != this->end(); at++)
+		for (; at != this->end(); at++) {
 			if (temp > *at)
 				temp = *at;
+		}
 		return temp;
 	}
-	else
-	{
+	else {
 		cout << "亲容器里没有元素哪来的最小值哇" << endl;
 		return;
 	}
 }
 
 template<class T>
-T My_Vector<T>::minimum(T*& pos)const//太简单了没有注释
-{
+T My_Vector<T>::minimum(T*& pos)const {
 	T* at = this->begin();
 	pos = this->address;
-	if (at)
-	{
+	if (at) {
 		T temp = *at;
-		for (; at != this->end(); at++)
-			if (temp > *at)
-			{
+		for (; at != this->end(); at++) {
+			if (temp > *at)	{
 				temp = *at;
 				pos = at;
 			}
+		}
 		return temp;
 	}
-	else
-	{
+	else {
 		cout << "亲容器里没有元素哪来的最小值哇" << endl;
 		return;
 	}
 }
 
 template<class T>
-T My_Vector<T>::minimum(int pos1, int pos2)const//太简单了没有注释
-{
+T My_Vector<T>::minimum(int pos1, int pos2)const {
 	try {
 		T temp = this->at(pos1);
-		if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0)
-		{
-			for (int i = pos1; i != pos2; i++)
-				if (temp > this->at(i))
-				{
+		if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
+			for (int i = pos1; i != pos2; i++) {
+				if (temp > this->at(i))	{
 					temp = this->at(i);
 				}
+			}
 			return temp;
 		}
 		else throw pos1;
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "亲下标是不是传错了" << endl;
 		return;
 	}
 }
 
 template<class T>
-T My_Vector<T>::minimum(int pos1, int pos2, T*& pos)const//太简单了没有注释
-{
+T My_Vector<T>::minimum(int pos1, int pos2, T*& pos)const {
 	try {
 		T temp = this->at(pos1);
 		pos = this->address + pos1;
-		if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0)
-		{
-			for (int i = pos1; i != pos2; i++)
-				if (temp < this->at(i))
-				{
+		if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
+			for (int i = pos1; i != pos2; i++) {
+				if (temp < this->at(i)) {
 					temp = this->at(i);
 					pos = this->address + i;
 				}
+			}
 			return temp;
 		}
-		else throw pos1
+		else throw pos1;
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "亲下标是不是传错了" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::assign(int&& _newsize, int&& val)//重新分配内存并初始化
-{
-	if (num)
+//重新分配内存并初始化
+void My_Vector<T>::assign(int&& _newsize, int&& val) {
+	if (num) {
 		delete[] address;
+	}
 	address = new T[_newsize];
 	this->num = _newsize;//调整num大小
-	for (capacity = 1; capacity < num;)
-		capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;//调整capacity大小
-	for (auto i = this->begin(); i != this->end(); i++)
-		*i = val;//初始化
+	for (capacity = 1; capacity < num;) {
+		//调整capacity大小
+		capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;
+	}
+	for (auto i = this->begin(); i != this->end(); i++) {
+		//初始化
+		*i = val;
+	}
 }
 
 
 template<class T>
-void My_Vector<T>::insert(Iterator& it, T&& data)
-{
+void My_Vector<T>::insert(Iterator& it, T&& data) {
 	try {
-		int offset = it - address;//计算插入位置距离容器首地址的距离
-		if (offset >= 0 && offset < num)
-		{
-			int i = 0;//定义临时变量
-			int size = num - offset;//计算需要临时存储的数据的大小
-			if (num == capacity)
-				capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;//调整capacity大小
-			T* _new = new T[capacity];//申请新的堆内存存vector
-			if (size > 0 && size <= num)//防止size出现异常
-			{
-				T* at = new T[size];//申请堆内存暂存数据
-				for (i = 0; i < (num - offset); i++)
-					at[i] = address[offset + i];//暂存需要转移的数据
-				for (i = 0; i < (num - offset); i++)
-					_new[offset + i + 1] = at[i];//存第二段vector(也就是全部后移)
-				i = 0;//初始化临时变量(_new要用)
+		//计算插入位置距离容器首地址的距离
+		int offset = it - address;
+		if (offset >= 0 && offset < num) {
+			//定义临时变量
+			int i = 0;
+			//计算需要临时存储的数据的大小
+			int size = num - offset;
+			if (num == capacity) {
+				//调整capacity大小
+				capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;
+			}
+			//申请新的堆内存存vector
+			T* _new = new T[capacity];
+			//防止size出现异常
+			if (size > 0 && size <= num) {
+				//申请堆内存暂存数据
+				T* at = new T[size];
+				for (i = 0; i < (num - offset); i++) {
+					//暂存需要转移的数据
+					at[i] = address[offset + i];
+				}
+				for (i = 0; i < (num - offset); i++) {
+					//存第二段vector(也就是全部后移)
+					_new[offset + i + 1] = at[i];
+				}
+				//初始化临时变量(_new要用)
+				i = 0;
 				delete[] at;
 			}
-			if (offset != 0)
-			{
-				for (i = 0; i < offset; i++)
-				{
+			if (offset != 0) {
+				for (i = 0; i < offset; i++) {
 					_new[i] = address[i];//存第一段vector
 				}
 			}
-			_new[i] = data;//存插入的数据
+			//存插入的数据
+			_new[i] = data;
 			delete[] address;
 			address = _new;
 			num++;
@@ -521,40 +538,39 @@ void My_Vector<T>::insert(Iterator& it, T&& data)
 		else
 			throw offset;
 	}
-	catch (int)
-	{
+	catch (int) {
 		cout << "插入位置越界啦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::insert(const int pos, T&& data)
-{
+void My_Vector<T>::insert(const int pos, T&& data) {
 	try {
-		int offset = pos;//计算插入位置距离容器首地址的距离
-		if (offset >= 0 && offset < num)
-		{
-			int i = 0;//定义临时变量
-			int size = num - offset;//计算需要临时存储的数据的大小
-			if (num == capacity)
-				capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;//调整capacity大小
-			T* _new = new T[capacity];//申请新的堆内存存vector
-			if (size > 1 && size <= num)//防止size出现异常
-			{
-				T* at = new T[size];//申请堆内存暂存数据
-				for (i = 0; i < (num - offset); i++)
-					at[i] = address[offset + i];//暂存需要转移的数据
-				for (i = 0; i < (num - offset); i++)
-					_new[offset + i + 1] = at[i];//存第二段vector(也就是全部后移)
-				i = 0;//初始化临时变量(_new要用)
+		//计算插入位置距离容器首地址的距离
+		int offset = pos;
+		if (offset >= 0 && offset < num) {
+			int i = 0;
+			int size = num - offset;
+			if (num == capacity) {
+				capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;
+			}
+			T* _new = new T[capacity];
+			if (size > 1 && size <= num) {
+				T* at = new T[size];
+				for (i = 0; i < (num - offset); i++) {
+					at[i] = address[offset + i];
+				}
+				for (i = 0; i < (num - offset); i++) {
+					_new[offset + i + 1] = at[i];
+				}
+				i = 0;
 				delete[] at;
 			}
-			for (i = 0; i < offset; i++)
-			{
-				_new[i] = address[i];//存第一段vector
+			for (i = 0; i < offset; i++) {
+				_new[i] = address[i];
 			}
-			_new[i] = data;//存插入的数据
+			_new[i] = data;
 			delete[] address;
 			address = _new;
 			num++;
@@ -562,43 +578,44 @@ void My_Vector<T>::insert(const int pos, T&& data)
 		else
 			throw offset;
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "插入位置越界啦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::insert(const int pos, const T* data_beg, const T* data_end)
-{
+void My_Vector<T>::insert(const int pos, const T* data_beg, const T* data_end) {
 	try {
-		int offset = data_end - data_beg + 1;//计算插入位置距离容器首地址的距离
-		if (offset <= 0)
+		//计算插入位置距离容器首地址的距离
+		int offset = data_end - data_beg + 1;
+		if (offset <= 0) {
 			throw static_cast<float>(-1);
-		if (pos >= 0 && pos <= num)//防止越界
+		}
+		//防止越界
+		if (pos >= 0 && pos <= num)
 		{
-			int i = 0;//定义临时变量
-			int size = num - pos;//计算需要临时存储的数据的大小
+			int i = 0;
+			int size = num - pos;
 			num += offset;
 			if (num >= capacity)
 				while (capacity <= num)
-					capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;//调整capacity大小
-			T* _new = new T[capacity];//申请新的堆内存存vector
-			if (size > 0 && size <= num)//防止size出现异常
+					capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;
+			T* _new = new T[capacity];
+			if (size > 0 && size <= num)
 			{
-				T* at = new T[size];//申请堆内存暂存数据
+				T* at = new T[size];
 				for (i = 0; i < (num - offset - pos); i++)
-					at[i] = address[pos + i];//暂存需要转移的数据
+					at[i] = address[pos + i];
 				for (i = 0; i < (num - offset - pos); i++)
-					_new[offset + pos + i] = at[i];//存第二段vector(也就是全部后移)
+					_new[offset + pos + i] = at[i];
 				delete[] at;
 			}
 			for (i = 0; i < pos; i++)
-				_new[i] = address[i];//存第一段vector
+				_new[i] = address[i];
 
 			for (i = 0; i < offset; i++)
-				_new[pos + i] = data_beg[i];//存插入的数据
+				_new[pos + i] = data_beg[i];
 
 			delete[] address;
 			address = _new;
@@ -606,77 +623,78 @@ void My_Vector<T>::insert(const int pos, const T* data_beg, const T* data_end)
 		else
 			throw - 1;
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "插入位置越界啦！" << endl;
 		return;
 	}
-	catch (float)
-	{
+	catch (float) {
 		cout << "数组的下标传错啦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::insert(const int pos, My_Vector& other)
-{
+void My_Vector<T>::insert(const int pos, My_Vector& other) {
 	try {
-		int offset = other.num;//计算插入位置距离容器首地址的距离
-		if (offset <= 0)
+		//计算插入位置距离容器首地址的距离
+		int offset = other.num;
+		if (offset <= 0) {
 			throw static_cast<float>(-1);
-		if (pos >= 0 && pos <= num)//防止越界
-		{
-			int i = 0;//定义临时变量
-			int size = num - pos;//计算需要临时存储的数据的大小
+		}
+		//防止越界
+		if (pos >= 0 && pos <= num) {
+			int i = 0;
+			int size = num - pos;
 			num += offset;
-			if (num >= capacity)
-				while (capacity <= num)
-					capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;//调整capacity大小
-			T* _new = new T[capacity];//申请新的堆内存存vector
-			if (size > 0 && size <= num)//防止size出现异常
-			{
-				T* at = new T[size];//申请堆内存暂存数据
-				for (i = 0; i < (num - offset - pos); i++)
-					at[i] = address[pos + i];//暂存需要转移的数据
-				for (i = 0; i < (num - offset - pos); i++)
-					_new[offset + pos + i] = at[i];//存第二段vector(也就是全部后移)
+			if (num >= capacity) {
+				while (capacity <= num) {
+					capacity += ((capacity >> 2) > 1) ? (capacity >> 2) : 1;
+				}
+			}
+			T* _new = new T[capacity];
+			if (size > 0 && size <= num) {
+				T* at = new T[size];
+				for (i = 0; i < (num - offset - pos); i++) {
+					at[i] = address[pos + i];
+				}
+				for (i = 0; i < (num - offset - pos); i++) {
+					_new[offset + pos + i] = at[i];
+				}
 				delete[] at;
 			}
-			for (i = 0; i < pos; i++)
-				_new[i] = address[i];//存第一段vector
-
-			for (i = 0; i < offset; i++)
-				_new[pos + i] = other.at(i);//存插入的数据
-
+			for (i = 0; i < pos; i++) {
+				_new[i] = address[i];
+			}
+			for (i = 0; i < offset; i++) {
+				//存插入的数据
+				_new[pos + i] = other.at(i);
+			}
 			delete[] address;
 			address = _new;
 		}
 		else
 			throw - 1;
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "插入位置越界啦！" << endl;
 		return;
 	}
-	catch (float)
-	{
+	catch (float) {
 		cout << "数组的下标传错啦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::clear()//太简单了没有注释
+void My_Vector<T>::clear()
 {
-	if (num)
+	if (num) {
 		_clear();
+	}
 }
 
 template<class T>
-void My_Vector<T>::swap(My_Vector& other)//太简单了没有注释
-{
+void My_Vector<T>::swap(My_Vector& other) {
 	T* temp;
 	size_t tmp;
 
@@ -694,282 +712,263 @@ void My_Vector<T>::swap(My_Vector& other)//太简单了没有注释
 }
 
 template<class T>
-void My_Vector<T>::erase(Iterator& it)
-{
-	try
-	{
-		if (num--)
-		{
-			if (!num)
-				_clear();//如果全部元素都删除了就初始化容器
-			else
-			{
+void My_Vector<T>::erase(Iterator& it) {
+	try	{
+		if (num--) {
+			if (!num) {
+				//如果全部元素都删除了就初始化容器
+				_clear();
+			}
+			else {
 				int offset = it - address;
-				for (int i = 0; i < num; i++)
-				{
-					address[offset + i] = address[offset + i + 1];//将后一个元素覆盖前一个元素
+				for (int i = 0; i < num; i++) {
+					//将后一个元素覆盖前一个元素
+					address[offset + i] = address[offset + i + 1];
 				}
 			}
 		}
 		else throw - 1;
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "容器里没有元素怎么删除啊亲！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::erase(const int pos)
-{
-	try
-	{
-		if (num-- && pos >= 0 && pos < num)
-		{
-			if (!num)
-				_clear();//如果全部元素都删除了就初始化容器
-			else
-			{
+void My_Vector<T>::erase(const int pos) {
+	try	{
+		if (num-- && pos >= 0 && pos < num)	{
+			if (!num) {
+				_clear();
+			}
+			else {
 				int offset = pos;
-				for (int i = 0; i < num; i++)
-				{
-					address[offset + i] = address[offset + i + 1];//将后一个元素覆盖前一个元素
+				for (int i = 0; i < num; i++) {
+					address[offset + i] = address[offset + i + 1];
 				}
 			}
 		}
 		else throw - 1;
 	}
-	catch (int)
-	{
+	catch (int) {
 		cout << "容器里没有元素怎么删除啊亲！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::erase(const int pos1, const int pos2)
-{
-	try
-	{
-		if (num)//检测容器是否为空
-		{
-			if (pos1 >= 0 && pos1 < num && pos2 >= 0 && pos2 < num)//检测是否越界
-			{
+void My_Vector<T>::erase(const int pos1, const int pos2) {
+	try	{
+		if (num) {
+			//检测是否越界
+			if (pos1 >= 0 && pos1 < num && pos2 >= 0 && pos2 < num)	{
 				int beg = 0;
 				int end = 0;
 				int offset = 0;
-				if (pos1 < pos2)
-				{
-					offset = pos2 - pos1 + 1;//计算下标之间的距离
+				if (pos1 < pos2) {
+					//计算下标之间的距离
+					offset = pos2 - pos1 + 1;
 					beg = pos1;
 					end = pos2;
-					num -= offset;//更新num
+					//更新num
+					num -= offset;
 				}
-				else if (pos2 < pos1)
-				{
-					offset = pos1 - pos2 + 1;//计算下标之间的距离
+				else if (pos2 < pos1) {
+					offset = pos1 - pos2 + 1;
 					beg = pos2;
 					end = pos1;
-					num -= offset;//更新num
+					num -= offset;
 				}
-				else throw static_cast<float>(-1.0);//检测下标是否不同
+				//检测下标是否不同
+				else throw static_cast<float>(-1.0);
 
-				if (!num)
-					_clear();//如果全部元素都删除了就初始化容器
-				else
-					for (int i = 0; i < num + offset - end - 1; i++)
-					{
-						address[beg + i] = address[end + i + 1];//将区间后一个元素覆盖区间内一个元素
+				if (!num) {
+					_clear();
+				}
+				else {
+					for (int i = 0; i < num + offset - end - 1; i++) {
+						address[beg + i] = address[end + i + 1];
 					}
+				}
 			}
 			else throw static_cast<double>(-1.0);
 		}
 		else throw - 1;
 	}
-	catch (int)
-	{
+	catch (int) {
 		cout << "容器里没有元素怎么删除啊亲！" << endl;
 		return;
 	}
-	catch (double)
-	{
+	catch (double) {
 		cout << "输入的下标越界啦！" << endl;
 		return;
 	}
-	catch (float)
-	{
+	catch (float) {
 		cout << "输入的下标不可以一样哦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::modify(const int pos, T&& data)//太简单了没有注释
-{
-	try
-	{
-		if (pos >= 0 && pos < num)
+void My_Vector<T>::modify(const int pos, T&& data) {
+	try	{
+		if (pos >= 0 && pos < num) {
 			address[pos] = data;
-		else
+		}
+		else {
 			throw - 1;
+		}
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "输入的下标越界啦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::modify(Iterator& it, T&& data)//太简单了没有注释
-{
-	try
-	{
+void My_Vector<T>::modify(Iterator& it, T&& data) {
+	try	{
 		int pos = it - address;
-		if (pos >= 0 && pos < num)
+		if (pos >= 0 && pos < num) {
 			address[pos] = data;
-		else
+		}
+		else {
 			throw - 1;
+		}
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "输入的下标越界啦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::modify(const int pos1, const int pos2, const T* data_beg, const T* data_end)//太简单了没有注释
-{
-	try
-	{
+void My_Vector<T>::modify(const int pos1, const int pos2, const T* data_beg, const T* data_end) {
+	try {
 		int beg = 0;
 		int end = 0;
 		int offset = 0;
-		if (pos2 < pos1)
-		{
+		if (pos2 < pos1) {
 			offset = pos1 - pos2 + 1;
 			beg = pos2;
 			end = pos1;
 		}
-		else if (pos1 < pos2)
-		{
+		else if (pos1 < pos2) {
 			offset = pos2 - pos1 + 1;
 			beg = pos1;
 			end = pos2;
 		}
-		else
-			throw - 1;//检测下标是否不同
+		else {
+			//检测下标是否不同
+			throw - 1;
+		}
 
-		if (offset > this->num)
+		if (offset > this->num) {
 			throw static_cast<double>(-1);
-		if (static_cast<int>(data_end - data_beg) < offset)//数组的长度必须大于等于修改的长度
+		}
+		//数组的长度必须大于等于修改的长度
+		if (static_cast<int>(data_end - data_beg) < offset) {
 			throw static_cast<float>(-1);
-
-		for (int i = 0; i < offset && i < static_cast<int>(data_end - data_beg); i++)
-		{
+		}
+		for (int i = 0; i < offset && i < static_cast<int>(data_end - data_beg); i++) {
 			address[beg + i] = data_beg[i];
 		}
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cerr << "输入的下标不可以一样哦！" << endl;
 		return;
 	}
-	catch (double)
-	{
+	catch (double) {
 		cout << "输入的下标越界了！" << endl;
 		return;
 	}
-	catch (float)
-	{
+	catch (float) {
 		cout << "数组长度太短了，不足以修改下标之间的数据哦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::modify(const int pos1, const int pos2, const My_Vector& other)//太简单了没有注释
-{
-	try
-	{
+void My_Vector<T>::modify(const int pos1, const int pos2, const My_Vector& other) {
+	try	{
 		int beg = 0;
 		int end = 0;
 		int offset = 0;
-		if (pos2 < pos1)
-		{
+		if (pos2 < pos1) {
 			offset = pos1 - pos2 + 1;
 			beg = pos2;
 			end = pos1;
 		}
-		else if (pos1 < pos2)
-		{
+		else if (pos1 < pos2) {
 			offset = pos2 - pos1 + 1;
 			beg = pos1;
 			end = pos2;
 		}
-		else
-			throw - 1;//检测下标是否不同
+		else {
+			throw - 1;
+		}
 
-		if (offset > this->num)
+		if (offset > this->num) {
 			throw static_cast<double>(-1);
-		if (other.num < offset)//数组的长度必须大于等于修改的长度
+		}
+		if (other.num < offset) {
 			throw static_cast<float>(-1);
-
-		for (int i = 0; i < offset && i < num; i++)
-		{
+		}
+		for (int i = 0; i < offset && i < num; i++)	{
 			address[beg + i] = other.at(i);
 		}
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cout << "输入的下标不可以一样哦！" << endl;
 		return;
 	}
-	catch (double)
-	{
+	catch (double) {
 		cout << "输入的下标越界了！" << endl;
 		return;
 	}
-	catch (float)
-	{
+	catch (float) {
 		cout << "数组长度太短了，不足以修改下标之间的数据哦！" << endl;
 		return;
 	}
 }
 
 template<class T>
-void My_Vector<T>::sort(bool sign = false)
-{
+// shellsort
+void My_Vector<T>::sort(bool sign = false) {
 	try {
-		if (num)
-		{
+		if (num) {
 			T temp = 0;
-			if (sign == true)//升序
-				for (int gap = num / 2; gap > 0; gap /= 2)
-					for (int i = gap; i < num; ++i)
-						for (int j = i - gap; j >= 0 && address[j] > address[j + gap]; j -= gap)
-						{
+			//升序
+			if (sign == true) {
+				for (int gap = num / 2; gap > 0; gap /= 2) {
+					for (int i = gap; i < num; ++i) {
+						for (int j = i - gap; j >= 0 && address[j] > address[j + gap]; j -= gap) {
 							temp = address[j];
 							address[j] = address[j + gap];
 							address[j + gap] = temp;
 						}
-			else  //降序
-				for (int gap = num / 2; gap > 0; gap /= 2)
-					for (int i = gap; i < num; ++i)
-						for (int j = i - gap; j >= 0 && address[j] < address[j + gap]; j -= gap)
-						{
+					}
+				}
+			}
+			//降序
+			else {
+				for (int gap = num / 2; gap > 0; gap /= 2) {
+					for (int i = gap; i < num; ++i) {
+						for (int j = i - gap; j >= 0 && address[j] < address[j + gap]; j -= gap) {
 							temp = address[j];
 							address[j] = address[j + gap];
 							address[j + gap] = temp;
 						}
+					}
+				}
+			}
 		}
-		else
+		else {
 			throw - 1;
+		}
 	}
-	catch (int)
-	{
+	catch (int)	{
 		cerr << "没有数据怎么排序啊亲!" << endl;
 		return;
 	}
