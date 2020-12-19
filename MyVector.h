@@ -7,7 +7,7 @@
 
 using namespace std;
 template<class T>
-class My_Vector {
+class MyVector {
 private:
 	T* address;//首地址
 	size_t capacity;//容量大小
@@ -20,12 +20,15 @@ private:
 	}
 
 public:
-	explicit My_Vector() { address = nullptr; num = capacity = 0; }
-	My_Vector(My_Vector& other) :address(address), capacity(capacity), num(num) {
-		for (int i = 0; i < other.num; i++)
-			*(address + i) = *(other.address + i);
+	explicit MyVector() { 
+		address = nullptr; num = capacity = 0; 
 	}
-	~My_Vector() {
+	MyVector(MyVector& other) :address(address), capacity(capacity), num(num) {
+		for (int i = 0; i < other.num; i++) {
+			*(address + i) = *(other.address + i);
+		}
+	}
+	~MyVector() {
 		_clear();
 	}
 	struct Iterator {
@@ -134,7 +137,7 @@ public:
 	};
 
 	/*---------------------------------------以下为<<重载-------------------------------------------*/
-	friend ostream& operator << (ostream& os, const My_Vector<T>* dt);
+	friend ostream& operator << (ostream& os, const MyVector<T>* dt);
 
 	/*--------------------------------------以下为成员函数------------------------------------------*/
 	//求容器始端地址
@@ -220,11 +223,11 @@ public:
 	//从下标所在位置开始插入数据
 	void insert(const int pos, const T* data_beg, const T* data_end);
 	//从下标所在位置开始插入数据
-	void insert(const int pos, My_Vector& other);
+	void insert(const int pos, MyVector& other);
 	//清空数据
 	void clear();
 	//交换两个vector
-	void swap(My_Vector& other);
+	void swap(MyVector& other);
 	//删除迭代器所在位置元素
 	void erase(Iterator& it);
 	//删除下标所在位置元素
@@ -238,25 +241,26 @@ public:
 	//修改两个下标之间的所有元素
 	void modify(const int pos1, const int pos2, const T* data_beg, const T* data_end);
 	//修改两个下标之间的所有元素
-	void modify(const int pos1, const int pos2, const My_Vector& other);
+	void modify(const int pos1, const int pos2, const MyVector& other);
 	//根据sign进行升序/降序排序,默认false降序，true升序(quicksort)
 	void sort(bool sign);
 };
 
 template<class T>
-ostream& operator << (ostream& os, const My_Vector<T>* dt) {
+ostream& operator << (ostream& os, const MyVector<T>* dt) {
 	return os << *dt;
 }
 
 template<class T>
-void My_Vector<T>::push_back(const T& data) {
+void MyVector<T>::push_back(const T& data) {
 	if (num == capacity)
 	{
 		capacity += ((capacity >> 1) > 1) ? (capacity >> 1) : 1;
+		T* temp = new T[num];
 		//临时保存数据
 		memcpy(temp, address, num * sizeof(T));
 		//重新分配内存
-		this.address = new T[capacity];
+		this->address = new T[capacity];
 		//把临时数据拷贝回来
 		memcpy(address, temp, num * sizeof(T));
 		delete[] temp;
@@ -265,7 +269,7 @@ void My_Vector<T>::push_back(const T& data) {
 }
 
 template<class T>
-void My_Vector<T>::push_front(const T& data) {
+void MyVector<T>::push_front(const T& data) {
 	if (num == capacity) {
 		//每次开1.5倍内存
 		capacity += ((capacity >> 1) > 1) ? (capacity >> 1) : 1;
@@ -274,7 +278,7 @@ void My_Vector<T>::push_front(const T& data) {
 	//临时保存数据
 	memcpy(temp, address, num * sizeof(T));
 	//重新分配内存
-	this.address = new T[capacity];
+	this->address = new T[capacity];
 	//把临时数据拷贝回来
 	memcpy(address + 1, temp, num * sizeof(T));
 	delete[] temp;
@@ -284,7 +288,7 @@ void My_Vector<T>::push_front(const T& data) {
 }
 
 template<class T>
-void My_Vector<T>::pop_back() {
+void MyVector<T>::pop_back() {
 	if (--num != 0) {
 		T* temp = new T[num];
 		for (int i = 0; i < num; i++) {
@@ -304,7 +308,7 @@ void My_Vector<T>::pop_back() {
 }
 
 template<class T>
-void My_Vector<T>::pop_front() {
+void MyVector<T>::pop_front() {
 	if (--num != 0) {
 		T* temp = new T[num];
 		for (int i = 1; i <= num; i++) {
@@ -322,7 +326,7 @@ void My_Vector<T>::pop_front() {
 }
 
 template<class T>
-T My_Vector<T>::maximum()const {
+T MyVector<T>::maximum()const {
 	T* at = this->begin();
 	if (at) {
 		T temp = *at;
@@ -340,7 +344,7 @@ T My_Vector<T>::maximum()const {
 }
 
 template<class T>
-T My_Vector<T>::maximum(T*& pos)const {
+T MyVector<T>::maximum(T*& pos)const {
 	T* at = this->begin();
 	pos = this->address;
 	if (at)	{
@@ -360,7 +364,7 @@ T My_Vector<T>::maximum(T*& pos)const {
 }
 
 template<class T>
-T My_Vector<T>::maximum(int pos1, int pos2)const {
+T MyVector<T>::maximum(int pos1, int pos2)const {
 	T temp = this->at(pos1);
 	if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
 		for (int i = pos1; i != pos2; i++)
@@ -376,7 +380,7 @@ T My_Vector<T>::maximum(int pos1, int pos2)const {
 }
 
 template<class T>
-T My_Vector<T>::maximum(int pos1, int pos2, T*& pos)const {
+T MyVector<T>::maximum(int pos1, int pos2, T*& pos)const {
 	T temp = this->at(pos1);
 	pos = this->address + pos1;
 	if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
@@ -395,7 +399,7 @@ T My_Vector<T>::maximum(int pos1, int pos2, T*& pos)const {
 }
 
 template<class T>
-T My_Vector<T>::minimum()const {
+T MyVector<T>::minimum()const {
 	T* at = this->begin();
 	if (at)	{
 		T temp = *at;
@@ -412,7 +416,7 @@ T My_Vector<T>::minimum()const {
 }
 
 template<class T>
-T My_Vector<T>::minimum(T*& pos)const {
+T MyVector<T>::minimum(T*& pos)const {
 	T* at = this->begin();
 	pos = this->address;
 	if (at) {
@@ -432,7 +436,7 @@ T My_Vector<T>::minimum(T*& pos)const {
 }
 
 template<class T>
-T My_Vector<T>::minimum(int pos1, int pos2)const {
+T MyVector<T>::minimum(int pos1, int pos2)const {
 	try {
 		T temp = this->at(pos1);
 		if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
@@ -452,7 +456,7 @@ T My_Vector<T>::minimum(int pos1, int pos2)const {
 }
 
 template<class T>
-T My_Vector<T>::minimum(int pos1, int pos2, T*& pos)const {
+T MyVector<T>::minimum(int pos1, int pos2, T*& pos)const {
 	try {
 		T temp = this->at(pos1);
 		pos = this->address + pos1;
@@ -475,7 +479,7 @@ T My_Vector<T>::minimum(int pos1, int pos2, T*& pos)const {
 
 template<class T>
 //重新分配内存并初始化
-void My_Vector<T>::assign(int&& _newsize, int&& val) {
+void MyVector<T>::assign(int&& _newsize, int&& val) {
 	if (num) {
 		delete[] address;
 	}
@@ -493,7 +497,7 @@ void My_Vector<T>::assign(int&& _newsize, int&& val) {
 
 
 template<class T>
-void My_Vector<T>::insert(Iterator& it, T&& data) {
+void MyVector<T>::insert(Iterator& it, T&& data) {
 	try {
 		//计算插入位置距离容器首地址的距离
 		int offset = it - address;
@@ -545,7 +549,7 @@ void My_Vector<T>::insert(Iterator& it, T&& data) {
 }
 
 template<class T>
-void My_Vector<T>::insert(const int pos, T&& data) {
+void MyVector<T>::insert(const int pos, T&& data) {
 	try {
 		//计算插入位置距离容器首地址的距离
 		int offset = pos;
@@ -585,7 +589,7 @@ void My_Vector<T>::insert(const int pos, T&& data) {
 }
 
 template<class T>
-void My_Vector<T>::insert(const int pos, const T* data_beg, const T* data_end) {
+void MyVector<T>::insert(const int pos, const T* data_beg, const T* data_end) {
 	try {
 		//计算插入位置距离容器首地址的距离
 		int offset = data_end - data_beg + 1;
@@ -634,7 +638,7 @@ void My_Vector<T>::insert(const int pos, const T* data_beg, const T* data_end) {
 }
 
 template<class T>
-void My_Vector<T>::insert(const int pos, My_Vector& other) {
+void MyVector<T>::insert(const int pos, MyVector& other) {
 	try {
 		//计算插入位置距离容器首地址的距离
 		int offset = other.num;
@@ -686,7 +690,7 @@ void My_Vector<T>::insert(const int pos, My_Vector& other) {
 }
 
 template<class T>
-void My_Vector<T>::clear()
+void MyVector<T>::clear()
 {
 	if (num) {
 		_clear();
@@ -694,7 +698,7 @@ void My_Vector<T>::clear()
 }
 
 template<class T>
-void My_Vector<T>::swap(My_Vector& other) {
+void MyVector<T>::swap(MyVector& other) {
 	T* temp;
 	size_t tmp;
 
@@ -712,7 +716,7 @@ void My_Vector<T>::swap(My_Vector& other) {
 }
 
 template<class T>
-void My_Vector<T>::erase(Iterator& it) {
+void MyVector<T>::erase(Iterator& it) {
 	try	{
 		if (num--) {
 			if (!num) {
@@ -736,7 +740,7 @@ void My_Vector<T>::erase(Iterator& it) {
 }
 
 template<class T>
-void My_Vector<T>::erase(const int pos) {
+void MyVector<T>::erase(const int pos) {
 	try	{
 		if (num-- && pos >= 0 && pos < num)	{
 			if (!num) {
@@ -758,7 +762,7 @@ void My_Vector<T>::erase(const int pos) {
 }
 
 template<class T>
-void My_Vector<T>::erase(const int pos1, const int pos2) {
+void MyVector<T>::erase(const int pos1, const int pos2) {
 	try	{
 		if (num) {
 			//检测是否越界
@@ -811,7 +815,7 @@ void My_Vector<T>::erase(const int pos1, const int pos2) {
 }
 
 template<class T>
-void My_Vector<T>::modify(const int pos, T&& data) {
+void MyVector<T>::modify(const int pos, T&& data) {
 	try	{
 		if (pos >= 0 && pos < num) {
 			address[pos] = data;
@@ -827,7 +831,7 @@ void My_Vector<T>::modify(const int pos, T&& data) {
 }
 
 template<class T>
-void My_Vector<T>::modify(Iterator& it, T&& data) {
+void MyVector<T>::modify(Iterator& it, T&& data) {
 	try	{
 		int pos = it - address;
 		if (pos >= 0 && pos < num) {
@@ -844,7 +848,7 @@ void My_Vector<T>::modify(Iterator& it, T&& data) {
 }
 
 template<class T>
-void My_Vector<T>::modify(const int pos1, const int pos2, const T* data_beg, const T* data_end) {
+void MyVector<T>::modify(const int pos1, const int pos2, const T* data_beg, const T* data_end) {
 	try {
 		int beg = 0;
 		int end = 0;
@@ -890,7 +894,7 @@ void My_Vector<T>::modify(const int pos1, const int pos2, const T* data_beg, con
 }
 
 template<class T>
-void My_Vector<T>::modify(const int pos1, const int pos2, const My_Vector& other) {
+void MyVector<T>::modify(const int pos1, const int pos2, const MyVector& other) {
 	try	{
 		int beg = 0;
 		int end = 0;
@@ -935,7 +939,7 @@ void My_Vector<T>::modify(const int pos1, const int pos2, const My_Vector& other
 
 template<class T>
 // shellsort
-void My_Vector<T>::sort(bool sign = false) {
+void MyVector<T>::sort(bool sign = false) {
 	try {
 		if (num) {
 			T temp = 0;
