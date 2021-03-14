@@ -4,6 +4,7 @@
 #pragma once
 
 #include <iostream>
+#include <exception>
 
 using namespace std;
 template<class T>
@@ -167,11 +168,11 @@ public:
 			if (pos < num && pos >= 0)
 				return address[pos];
 			else
-				throw pos;
+				throw range_error("Index out of range.");
 		}
-		catch (decltype(pos))
+		catch (range_error& e)
 		{
-			cout << endl << "访问的元素越界" << endl;
+			cerr << e.what() << endl;
 			return 0;
 		}
 	}
@@ -182,11 +183,11 @@ public:
 			if ((-1 * pos) <= num && pos < 0)
 				return address[num + pos];
 			else
-				throw pos;
+				throw range_error(""Index out of range."");
 		}
-		catch (decltype(pos))
+		catch (range_error& e)
 		{
-			cout << endl << "访问的元素越界" << endl;
+			cerr << e.what() << endl;
 			return;
 		}
 	}
@@ -437,19 +438,19 @@ T MyVector<T>::minimum(T*& pos)const {
 template<class T>
 T MyVector<T>::minimum(int pos1, int pos2)const {
 	try {
-		T temp = this->at(pos1);
+		T min = this->at(pos1);
 		if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
 			for (int i = pos1; i != pos2; i++) {
-				if (temp > this->at(i))	{
-					temp = this->at(i);
+				if (min > this->at(i))	{
+					min = this->at(i);
 				}
 			}
-			return temp;
+			return min;
 		}
-		else throw pos1;
+		else throw range_error("Index out of range.");
 	}
-	catch (int)	{
-		cout << "亲下标是不是传错了" << endl;
+	catch (range_error& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -457,21 +458,21 @@ T MyVector<T>::minimum(int pos1, int pos2)const {
 template<class T>
 T MyVector<T>::minimum(int pos1, int pos2, T*& pos)const {
 	try {
-		T temp = this->at(pos1);
+		T min = this->at(pos1);
 		pos = this->address + pos1;
 		if (pos1 < (int)num && pos1 >= 0 && pos2 < (int)num && pos2 >= 0) {
 			for (int i = pos1; i != pos2; i++) {
-				if (temp < this->at(i)) {
-					temp = this->at(i);
+				if (min < this->at(i)) {
+					min = this->at(i);
 					pos = this->address + i;
 				}
 			}
-			return temp;
+			return min;
 		}
-		else throw pos1;
+		else throw range_error("Index out of range.");
 	}
-	catch (int)	{
-		cout << "亲下标是不是传错了" << endl;
+	catch (range_error& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -539,10 +540,10 @@ void MyVector<T>::insert(Iterator& it, T&& data) {
 			num++;
 		}
 		else
-			throw offset;
+			throw range_error("Index out of range.");
 	}
-	catch (int) {
-		cout << "插入位置越界啦！" << endl;
+	catch (range_error& e) {
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -579,10 +580,10 @@ void MyVector<T>::insert(const int pos, T&& data) {
 			num++;
 		}
 		else
-			throw offset;
+			throw range_error("Index out of range.");
 	}
-	catch (int)	{
-		cout << "插入位置越界啦！" << endl;
+	catch (range_error& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -593,7 +594,7 @@ void MyVector<T>::insert(const int pos, const T* data_beg, const T* data_end) {
 		//计算插入位置距离容器首地址的距离
 		int offset = data_end - data_beg + 1;
 		if (offset <= 0) {
-			throw static_cast<float>(-1);
+			throw invalid_argument("invalid arguments");
 		}
 		//防止越界
 		if (pos >= 0 && pos <= num)
@@ -624,14 +625,14 @@ void MyVector<T>::insert(const int pos, const T* data_beg, const T* data_end) {
 			address = _new;
 		}
 		else
-			throw - 1;
+			throw range_error("Index out of range.");
 	}
-	catch (int)	{
-		cout << "插入位置越界啦！" << endl;
+	catch (range_error& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
-	catch (float) {
-		cout << "数组的下标传错啦！" << endl;
+	catch (invalid_argument& e) {
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -642,7 +643,7 @@ void MyVector<T>::insert(const int pos, MyVector& other) {
 		//计算插入位置距离容器首地址的距离
 		int offset = other.num;
 		if (offset <= 0) {
-			throw static_cast<float>(-1);
+			throw invalid_argument("invalid argument");
 		}
 		//防止越界
 		if (pos >= 0 && pos <= num) {
@@ -676,14 +677,14 @@ void MyVector<T>::insert(const int pos, MyVector& other) {
 			address = _new;
 		}
 		else
-			throw - 1;
+			throw range_error("Index out of range.");
 	}
-	catch (int)	{
-		cout << "插入位置越界啦！" << endl;
+	catch (range_error& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
-	catch (float) {
-		cout << "数组的下标传错啦！" << endl;
+	catch (invalid_argument& e) {
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -730,10 +731,11 @@ void MyVector<T>::erase(Iterator& it) {
 				}
 			}
 		}
-		else throw - 1;
+		else throw underflow_error("no element in vector");
 	}
-	catch (int)	{
+	catch (underflow_error& e)	{
 		cout << "容器里没有元素怎么删除啊亲！" << endl;
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -741,7 +743,10 @@ void MyVector<T>::erase(Iterator& it) {
 template<class T>
 void MyVector<T>::erase(const int pos) {
 	try	{
-		if (num-- && pos >= 0 && pos < num)	{
+		if (num--)	{
+			if (pos < 0 || pos >= num) {
+				throw range_error("Index out of range.");
+			}
 			if (!num) {
 				_clear();
 			}
@@ -752,63 +757,59 @@ void MyVector<T>::erase(const int pos) {
 				}
 			}
 		}
-		else throw - 1;
+		else throw underflow_error("No element in vector!");
 	}
-	catch (int) {
-		cout << "容器里没有元素怎么删除啊亲！" << endl;
+	catch (underflow_error& e) {
+		cerr << e.what() << endl;
 		return;
+	}
+	catch (range_error& e) {
+		cerr << e.what() << endl;
 	}
 }
 
 template<class T>
 void MyVector<T>::erase(const int pos1, const int pos2) {
-	try	{
-		if (num) {
-			//检测是否越界
-			if (pos1 >= 0 && pos1 < num && pos2 >= 0 && pos2 < num)	{
-				int beg = 0;
-				int end = 0;
-				int offset = 0;
-				if (pos1 < pos2) {
-					//计算下标之间的距离
-					offset = pos2 - pos1 + 1;
-					beg = pos1;
-					end = pos2;
-					//更新num
-					num -= offset;
-				}
-				else if (pos2 < pos1) {
-					offset = pos1 - pos2 + 1;
-					beg = pos2;
-					end = pos1;
-					num -= offset;
-				}
-				//检测下标是否不同
-				else throw static_cast<float>(-1.0);
+	try {
+		//检测是否越界
+		if (num && pos1 >= 0 && pos1 < num && pos2 >= 0 && pos2 < num) {
+			int beg = 0;
+			int end = 0;
+			int offset = 0;
+			if (pos1 < pos2) {
+				//计算下标之间的距离
+				offset = pos2 - pos1 + 1;
+				beg = pos1;
+				end = pos2;
+				//更新num
+				num -= offset;
+			}
+			else if (pos2 < pos1) {
+				offset = pos1 - pos2 + 1;
+				beg = pos2;
+				end = pos1;
+				num -= offset;
+			}
+			//检测下标是否不同
+			else throw invalid_argument("Indexes should be different!");
 
-				if (!num) {
-					_clear();
-				}
-				else {
-					for (int i = 0; i < num + offset - end - 1; i++) {
-						address[beg + i] = address[end + i + 1];
-					}
+			if (!num) {
+				_clear();
+			}
+			else {
+				for (int i = 0; i < num + offset - end - 1; i++) {
+					address[beg + i] = address[end + i + 1];
 				}
 			}
-			else throw static_cast<double>(-1.0);
 		}
-		else throw - 1;
+		else throw range_error("Index out of range.");
 	}
-	catch (int) {
-		cout << "容器里没有元素怎么删除啊亲！" << endl;
+	catch (invalid_argument& e) {
+		cerr << e.what() << endl;
 		return;
 	}
-	catch (double) {
-		cout << "输入的下标越界啦！" << endl;
-		return;
-	}
-	catch (float) {
-		cout << "输入的下标不可以一样哦！" << endl;
+	catch (range_error& e) {
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -820,11 +821,11 @@ void MyVector<T>::modify(const int pos, T data) {
 			address[pos] = data;
 		}
 		else {
-			throw - 1;
+			throw range_error("Index out of range.");
 		}
 	}
-	catch (int)	{
-		cout << "输入的下标越界啦！" << endl;
+	catch (range_error& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -837,11 +838,11 @@ void MyVector<T>::modify(Iterator& it, T data) {
 			address[pos] = data;
 		}
 		else {
-			throw - 1;
+			throw range_error("Index out of range.");
 		}
 	}
-	catch (int)	{
-		cout << "输入的下标越界啦！" << endl;
+	catch (range_error& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -864,30 +865,26 @@ void MyVector<T>::modify(const int pos1, const int pos2, const T* data_beg, cons
 		}
 		else {
 			//检测下标是否不同
-			throw - 1;
+			throw invalid_argument("Indexes should be different!");
 		}
 
 		if (offset > this->num) {
-			throw static_cast<double>(-1);
+			throw range_error("Index is out of range!");
 		}
 		//数组的长度必须大于等于修改的长度
 		if (static_cast<int>(data_end - data_beg) < offset) {
-			throw static_cast<float>(-1);
+			throw range_error("Length of input data is out of range!");
 		}
 		for (int i = 0; i < offset && i < static_cast<int>(data_end - data_beg); i++) {
 			address[beg + i] = data_beg[i];
 		}
 	}
-	catch (int)	{
-		cerr << "输入的下标不可以一样哦！" << endl;
+	catch (invalid_argument& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
-	catch (double) {
-		cout << "输入的下标越界了！" << endl;
-		return;
-	}
-	catch (float) {
-		cout << "数组长度太短了，不足以修改下标之间的数据哦！" << endl;
+	catch (range_error& e) {
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -909,29 +906,25 @@ void MyVector<T>::modify(const int pos1, const int pos2, const MyVector& other) 
 			end = pos2;
 		}
 		else {
-			throw - 1;
+			throw invalid_argument("Indexes should be different!");
 		}
 
 		if (offset > this->num) {
-			throw static_cast<double>(-1);
+			throw range_error("Index is out of range!");
 		}
 		if (other.num < offset) {
-			throw static_cast<float>(-1);
+			throw range_error("Length of input vector is too short!");
 		}
 		for (int i = 0; i < offset && i < num; i++)	{
 			address[beg + i] = other.at(i);
 		}
 	}
-	catch (int)	{
-		cout << "输入的下标不可以一样哦！" << endl;
+	catch (invalid_argument& e)	{
+		cerr << e.what() << endl;
 		return;
 	}
-	catch (double) {
-		cout << "输入的下标越界了！" << endl;
-		return;
-	}
-	catch (float) {
-		cout << "数组长度太短了，不足以修改下标之间的数据哦！" << endl;
+	catch (range_error& e) {
+		cerr << e.what() << endl;
 		return;
 	}
 }
@@ -941,13 +934,13 @@ template<class T>
 void MyVector<T>::sort() {
 	try {
 		for (int i = 1; i < this->num; i++) {
-			T key = this->at(i);
+			T cur = this->at(i);
 			int j = i - 1;
-			while ((j >= 0) && (key < this->at(j))) {
+			while ((j >= 0) && (cur < this->at(j))) {
 				this->modify(j+1, this->at(j));
 				j--;
 			}
-			this->modify(j + 1, key);
+			this->modify(j + 1, cur);
 		}
 	}
 	catch (int)	{
