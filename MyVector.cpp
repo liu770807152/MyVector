@@ -41,16 +41,24 @@ int main() {
 	for (size_t i = 0; i < 10; i++)	{
 		myVector.push_back(distr(gen));
 	}
+	cout << "This is standard vector:" << endl;
 	print(vec);
+	cout << "This is my vector:" << endl;
 	print(myVector);
 	cout << "==========================================================" << endl;
 
 	myVector.sort();
+	cout << "After sorting:" << endl;
 	print(myVector);
-	cout << myVector.minimum() << " " << myVector.maximum() << endl;
+	
+	cout << "Min is: " << myVector.minimum() << " and max is: " << myVector.maximum() << endl;
+	
 	myVector.modify(0, 100);
+	cout << "Modify the first element to 100:" << endl;
 	print(myVector);
+	
 	myVector.erase(0);
+	cout << "Delete the first element:" << endl;
 	print(myVector);
 
 	return 0;
